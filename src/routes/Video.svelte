@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import * as PIXI from 'pixi.js';
 
-	let { videoName, shaderName } = $props();
+	let { videoName, shaderName, videoSpeed } = $props();
 
 	let app: PIXI.Application;
 	let videoElement: HTMLVideoElement;
@@ -14,6 +14,12 @@
 	});
 	$effect(() => {
 		applyFragmentShader(shaderName);
+	});
+	$effect(() => {
+		let _ = videoSpeed;
+		if (videoElement) {
+			videoElement.playbackRate = videoSpeed;
+		}
 	});
 
 	function applyFragmentShader(name: string) {

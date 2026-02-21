@@ -18,5 +18,18 @@ const ShaderSchema = z.object({
 	payload: ShaderPayloadSchema
 });
 
-export const WebSocketMsgSchema = z.discriminatedUnion('tool', [VideoSchema, ShaderSchema]);
+const VideoSpeedPayloadSchema = z.object({
+	speed: z.number()
+});
+
+const VideoSpeedSchema = z.object({
+	tool: z.literal('video_speed'),
+	payload: VideoSpeedPayloadSchema
+});
+
+export const WebSocketMsgSchema = z.discriminatedUnion('tool', [
+	VideoSchema,
+	ShaderSchema,
+	VideoSpeedSchema
+]);
 export type WebSocketMsg = z.infer<typeof WebSocketMsgSchema>;

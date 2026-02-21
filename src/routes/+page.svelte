@@ -6,6 +6,7 @@
 
 	let videoName = 'anime_twerk';
 	let shaderName = '';
+	let videoSpeed = 1;
 	let socket: WebSocket;
 	let reconnectAttempts = 0;
 
@@ -15,6 +16,8 @@
 			videoName = msg.payload.name;
 		} else if (msg.tool == 'shader') {
 			shaderName = msg.payload.name;
+		} else if (msg.tool == 'video_speed') {
+			videoSpeed = msg.payload.speed;
 		}
 	}
 
@@ -56,4 +59,4 @@
 	});
 </script>
 
-<Video {videoName} {shaderName} />
+<Video {videoName} {shaderName} {videoSpeed} />
