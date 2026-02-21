@@ -6,6 +6,8 @@
 
 	let videoName = 'anime_twerk';
 	let shaderName = '';
+	let socket: WebSocket;
+	let reconnectAttempts = 0;
 
 	function handleMsg(msg: WebSocketMsg) {
 		console.log('handling', msg);
@@ -16,14 +18,27 @@
 		}
 	}
 
-	onMount(() => {
-		const socket = new WebSocket(PUBLIC_WS_URL);
+	function reconnectSocket() {
+		if (!(socket.readyState in [WebSocket.OPEN, WebSocket.CONNECTING])) {
+			const delay = Math.min(10000, 1000 * Math.pow(2, reconnectAttempts));
+			console.log('reconnecting with delay', delay);
+			reconnectAttempts++;
+			setTimeout(connectSocket, delay);
+		} else {
+			console.log('skipping reconnect');
+		}
+	}
+
+	function connectSocket() {
+		socket = new WebSocket(PUBLIC_WS_URL);
 
 		socket.onopen = () => {
 			console.log('websocket connected');
+			reconnectAttempts = 0;
 		};
 		socket.onclose = () => {
 			console.log('websocket closed');
+			reconnectSocket();
 		};
 
 		socket.onmessage = (event) => {
@@ -34,6 +49,10 @@
 				handleMsg(msg);
 			}
 		};
+	}
+
+	onMount(() => {
+		connectSocket();
 	});
 </script>
 
